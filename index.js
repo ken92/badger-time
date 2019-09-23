@@ -1,3 +1,5 @@
+const util = require('./util');
+
 const readline = require('readline').createInterface({
   input: process.stdin,
   output: process.stdout
@@ -16,7 +18,7 @@ const getUserInput = (prompt, validOptions = null) => {
     };
 
     let input;
-    while (!input && (validOptions && validOptions.length? !validOptions.includes(input) : true)) {
+    while (!input && (validOptions && validOptions.length ? !validOptions.includes(input) : true)) {
       let _in = await getFromCommandLine(prompt);
       _in = _in.trim().toLowerCase();
       if (validOptions && validOptions.length && !validOptions.includes(_in)) {
@@ -26,6 +28,20 @@ const getUserInput = (prompt, validOptions = null) => {
       }
     }
     resolve(input);
+  });
+};
+
+const getNumColors = () => {
+  return new Promise(async (resolve, reject) => {
+    const isValid = c => {
+      return !(isNaN(numColors) || numColors <= 0 || numColors >= util.textColors.length);
+    };
+    let numColors;
+    while (!isValid(numColors)) {
+      let col = await getUserInput("How many colors?");
+      numColors = parseInt(col);
+    }
+    resolve(numColors);
   });
 };
 
@@ -41,8 +57,10 @@ finish = async () => {
 
 start = async () => {
   const numTurns = await getUserInput("How many turns? Options: 10, 12, 8", ["10", "12", "8"]);
-  console.log("numTurns:",numTurns);
-  const numColors = await getUserInput("How many colors?");
+  const numColors = await getNumColors();
+
+  console.log(util.textColors.red("asdfasdf"));
+
 
   finish();
 };
