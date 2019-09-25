@@ -14,9 +14,12 @@ finish = async () => {
 };
 
 start = async () => {
-  const lengthOfCode = await util.getUserInput("Length of code?", { min: 4, max: 30, type: "int" });
-  const numTurns = await util.getUserInput("How many turns?", { min: 4, max: 20, type: "int" });
-  const numColors = await util.getUserInput("How many colors?", { min: 2, max: Object.keys(util.textColors).length, type: "int" });
+  const lengthOfCode = 4;
+  const numTurns = 4;
+  const numColors = 4;
+  // const lengthOfCode = await util.getUserInput("Length of code?", { min: 4, max: 30, type: "int" });
+  // const numTurns = await util.getUserInput("How many turns?", { min: 4, max: 20, type: "int" });
+  // const numColors = await util.getUserInput("How many colors?", { min: 2, max: Object.keys(util.textColors).length, type: "int" });
 
   const game = new Game(numTurns, numColors, lengthOfCode);
   await game.play();

@@ -5,13 +5,13 @@ const readline = require('readline').createInterface({
 });
 
 const textColors = {
-  red: { color: colors.red, label: 'r' },
-  green: { color: colors.green, label: 'g' },
-  yellow: { color: colors.yellow, label: 'y' },
-  blue: { color: colors.blue, label: 'b' },
-  magenta: { color: colors.magenta, label: 'm' },
-  cyan: { color: colors.cyan, label: 'c' },
-  white: { color: colors.white, label: 'w' }
+  red: { color: colors.red, label: 'r', toString: () => 'r'.red },
+  green: { color: colors.green, label: 'g', toString: () => 'g'.green },
+  yellow: { color: colors.yellow, label: 'y', toString: () => 'y'.yellow },
+  blue: { color: colors.blue, label: 'b', toString: () => 'b'.bgWhite.blue },
+  magenta: { color: colors.magenta, label: 'm', toString: () => 'm'.magenta },
+  cyan: { color: colors.cyan, label: 'c', toString: () => 'c'.cyan },
+  white: { color: colors.white, label: 'w', toString: () => 'w'.white }
 };
 
 const backgroundColors = {
@@ -72,9 +72,14 @@ const cleanup = () => {
   readline.close();
 };
 
+const getRandomInt = (min, max) => {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+};
+
 module.exports = {
   textColors,
   backgroundColors,
   getUserInput,
-  cleanup
+  cleanup,
+  getRandomInt
 };
