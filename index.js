@@ -22,7 +22,7 @@ const getUserInput = (prompt, validOptions = null) => {
       let _in = await getFromCommandLine(prompt);
       _in = _in.trim().toLowerCase();
       if (validOptions && validOptions.length && !validOptions.includes(_in)) {
-        console.log(`  Please pick an option in the following list:  ${validOptions.join(', ')}`);
+        console.log(`  Please pick an option in the following list:  ${validOptions.join(', ')}\n`);
       } else {
         input = _in;
       }
@@ -33,12 +33,15 @@ const getUserInput = (prompt, validOptions = null) => {
 
 const getNumColors = () => {
   return new Promise(async (resolve, reject) => {
+    const maxNumberOfColors = Object.keys(util.textColors).length;
     const isValid = c => {
-      return !(isNaN(numColors) || numColors <= 0 || numColors >= util.textColors.length);
+      return !(isNaN(numColors) || numColors <= 0 || numColors >= maxNumberOfColors);
     };
     let numColors;
     while (!isValid(numColors)) {
       let col = await getUserInput("How many colors?");
+      if (!isValid(col))
+        console.log(`  Please choose between 2 and ${maxNumberOfColors}\n`);
       numColors = parseInt(col);
     }
     resolve(numColors);
@@ -59,7 +62,6 @@ start = async () => {
   const numTurns = await getUserInput("How many turns? Options: 10, 12, 8", ["10", "12", "8"]);
   const numColors = await getNumColors();
 
-  console.log(util.textColors.red("asdfasdf"));
 
 
   finish();
