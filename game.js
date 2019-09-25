@@ -37,14 +37,37 @@ class Game {
     return code;
   }
 
-  colorOptionsToString() {
+  colorOptionsToPrintString() {
     return this.colorOptions.map(c => c.toString()).join('');
   }
+  codeToPrintString() {
+    return this.code.map(c => c.toString()).join('');
+  }
+  codeToString() {
+    return this.code.map(c => c.label).join('');
+  }
 
-  async guessRound() {
-    return new Promise((resolve, reject) => {
-      console.log(`Color choices: ${this.colorOptionsToString()}`);
-      this.running = false;
+  guessRound() {
+    return new Promise(async (resolve, reject) => {
+      console.log(`Color choices: ${this.colorOptionsToPrintString()}`);
+
+      const guess = await util.getUserInput(`Code is ${this.code.length} characters long.  Please enter a guess.`);
+      console.log(`guess: `,guess);
+      const codeString = this.codeToString();
+      console.log(`code: `,codeString);
+      if (guess === codeString) {
+        console.log("Correct!  You win!");
+        this.running = false;
+        resolve();
+        return;
+      }
+
+      this.currentTurn++;
+      if (this.currentTurn >= this.numTurns) {
+        console.log("Game over!");
+        console.log(`Code was: ${this.codeToPrintString()}`);
+        this.running = false;
+      }
       resolve();
     });
   }
