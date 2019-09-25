@@ -1,4 +1,5 @@
 const util = require('./util');
+const Game = require('./game');
 
 const readline = require('readline').createInterface({
   input: process.stdin,
@@ -7,8 +8,9 @@ const readline = require('readline').createInterface({
 
 let start, finish;
 
-const getUserInput = (prompt, validOptions = null) => {
+const getUserInput = (prompt, options = {}) => {
   return new Promise(async (resolve, reject) => {
+    const { validOptions, type = "string", min, max } = options;
     const getFromCommandLine = text => {
       return new Promise((resolve, reject) => {
         readline.question(`${text}\n`, input => {
@@ -17,12 +19,31 @@ const getUserInput = (prompt, validOptions = null) => {
       });
     };
 
+    const isValid = input => {
+      if (validOptions && validOptions.length && !validOptions.includes(input)) {
+        return `Please pick an option in the following list:  ${validOptions.join(', ')}`;
+      } else if (type === 'int') {
+        const num = parseInt(input);
+        if (isNaN(num))
+          return `Please enter a number`;
+        if (min !== undefined && max !== undefined && (input < min || input > max))
+          return `Please enter a number between ${min} and ${max}`;
+        if ((min !== undefined && input < min))
+          return `Please enter a number greater than ${min}`;
+        if ((max !== undefined && input > max))
+          return `Please enter a number less than ${max}`;
+      }
+      return null;
+    };
+
     let input;
     while (!input && (validOptions && validOptions.length ? !validOptions.includes(input) : true)) {
       let _in = await getFromCommandLine(prompt);
       _in = _in.trim().toLowerCase();
-      if (validOptions && validOptions.length && !validOptions.includes(_in)) {
-        console.log(`  Please pick an option in the following list:  ${validOptions.join(', ')}\n`);
+
+      const invalidMessage = isValid(_in);
+      if (invalidMessage) {
+        console.log(`  ${invalidMessage}\n`);
       } else {
         input = _in;
       }
@@ -31,25 +52,8 @@ const getUserInput = (prompt, validOptions = null) => {
   });
 };
 
-const getNumColors = () => {
-  return new Promise(async (resolve, reject) => {
-    const maxNumberOfColors = Object.keys(util.textColors).length;
-    const isValid = c => {
-      return !(isNaN(numColors) || numColors <= 0 || numColors >= maxNumberOfColors);
-    };
-    let numColors;
-    while (!isValid(numColors)) {
-      let col = await getUserInput("How many colors?");
-      if (!isValid(col))
-        console.log(`  Please choose between 2 and ${maxNumberOfColors}\n`);
-      numColors = parseInt(col);
-    }
-    resolve(numColors);
-  });
-};
-
 finish = async () => {
-  const playAgain = await getUserInput("Would you like to play again? Options: yes, no", ["yes", "no"]);
+  const playAgain = await getUserInput("Would you like to play again? Options: yes, no", { validOptions: ["yes", "no"] });
   if (playAgain === 'yes')
     start();
   else {
@@ -59,10 +63,12 @@ finish = async () => {
 };
 
 start = async () => {
-  const numTurns = await getUserInput("How many turns? Options: 10, 12, 8", ["10", "12", "8"]);
-  const numColors = await getNumColors();
+  const lengthOfCode = await getUserInput("Length of code?", { min: 4, max: 30, type: "int" });
+  const numTurns = await getUserInput("How many turns?", { min: 4, max: 20, type: "int" });
+  const numColors = await getUserInput("How many colors?", { min: 2, max: Object.keys(util.textColors).length, type: "int" });
 
-
+  const game = new Game(numTurns, numColors, lengthOfCode);
+  await game.play();
 
   finish();
 };

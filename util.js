@@ -1,13 +1,13 @@
 const colors = require('colors');
 
 const textColors = {
-  red: colors.red,
-  green: colors.green,
-  yellow: colors.yellow,
-  blue: colors.blue,
-  magenta: colors.magenta,
-  cyan: colors.cyan,
-  white: colors.white
+  red: { color: colors.red, label: 'r' },
+  green: { color: colors.green, label: 'g' },
+  yellow: { color: colors.yellow, label: 'y' },
+  blue: { color: colors.blue, label: 'b' },
+  magenta: { color: colors.magenta, label: 'm' },
+  cyan: { color: colors.cyan, label: 'c' },
+  white: { color: colors.white, label: 'w' }
 };
 
 const backgroundColors = {
